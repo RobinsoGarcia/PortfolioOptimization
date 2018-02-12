@@ -1,9 +1,11 @@
 import pandas as pd
 import numpy as np
+import functions
 from cvxopt import matrix
 from cvxopt import solvers
 import matplotlib.pyplot as plt
 import math
+import matplotlib.dates as mdates
 
 solvers.options['show_progress'] = False
 solvers.options['max_iters'] = 200
@@ -29,10 +31,14 @@ def cov(returns):
 
 class portfolio():
 
-    def __init__(self,share_balance=None,p=None,V=0,cash_account=0,cost=0.005,steps=100):
+    def __init__(self,stocks=None,share_balance=None,p=None,V=0,cash_account=0,cost=0.005,steps=100,use_eff=0,buy_h=0):
 
         self.p = p
         self.share_balance = share_balance
+        self.rebalancing = 1
+        self.buy_h = buy_h
+        if self.buy_h==1:
+            self.switch_2_buy_and_hold()
         self.cost=cost
         self.return_hist = []
         self.cash_account = cash_account
@@ -41,21 +47,25 @@ class portfolio():
         self.V = V
         self.V_hist = [np.sum(V)]
         self.rf = 0.0001
-        self.use_eff=0
+        self.use_eff= use_eff
         self.V_gain = []
-        self.dailyV = np.empty([])
-        self.rebalancing = 1
+        self.dailyV = np.array([])
+        self.stocks = stocks
+        self.time=pd.DatetimeIndex([])
+        self.buy_h=buy_h
+        self.W = None
+
+
 
     def switch_2_buy_and_hold(self):
-        self.w_buy_and_hold = self.share_balance/np.sum(self.V)
-        self.w_buy_and_hold[np.isnan(self.w_buy_and_hold )]=0
         self.rebalancing = 0
 
     def update_V(self,p,rf=0.0001,t=2):
         self.rf = rf
-        self.p = p[-1:]
+        self.p = p[-1:].values
         dv = np.sum(self.share_balance*p,axis=1)
         self.dailyV = np.hstack([self.dailyV,dv])
+        self.time = np.concatenate((self.time,p.index))
         new_V = self.p*self.share_balance
         total_value = np.sum(new_V) + self.cash_account*(1+rf)**t
         self.V_hist.append(total_value)
@@ -105,6 +115,7 @@ class portfolio():
             #print("cash after loop: {}".format(cash))
 
             self.share_balance = new_balance
+            self.w = new_balance/np.sum(new_balance)
             self.cash_hist.append(cash)
         pass
 
@@ -117,27 +128,36 @@ class portfolio():
         print('Expected sharpe: {}'.format(sharpe))
 
     def plot_ret(self):
-        plt.title("Portfolio cumulative return")
+        plt.title("Portfolio cumulative return - "+self.method)
         plt.xlabel("time interval")
         plt.ylabel("cumulative return")
         plt.plot(np.cumprod(self.V_gain)-1)
 
-    def plot_cash(self):
-        plt.title("cash account")
-        plt.xlabel("time interval")
-        plt.ylabel("cash balance")
-        plt.plot(self.cash_hist)
+    def plot_cash(self,time):
+        if self.buy_h==0:
+            fig, ax = plt.subplots()
+            plt.title("cash account - "+self.method)
+            plt.xlabel("time interval")
+            plt.ylabel("cash balance")
+            plt.plot(time,self.cash_hist)
+            ax.xaxis.set_major_locator(mdates.MonthLocator(interval=3))
+            ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%y'))
+
 
     def plot_dailyV(self):
-        plt.title("Portfolio daily value")
+        fig, ax = plt.subplots()
+        plt.title("Portfolio daily value - "+self.method)
         plt.xlabel("time interval")
         plt.ylabel("Total value")
-        plt.plot(self.dailyV)
-
+        plt.plot(self.time,self.dailyV)
+        ax.xaxis.set_major_locator(mdates.MonthLocator(interval=3))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%y'))
+        #https://matplotlib.org/api/dates_api.html
 
 class strat_max_Sharpe(portfolio):
 
         def optimize(self,Q,mu,stats=0):
+            self.method = 'strat_max_Sharpe'
             if self.use_eff==0:
                 self.init_opt(Q,mu,sharpe=1)
                 Q=2*Q
@@ -157,7 +177,7 @@ class strat_max_Sharpe(portfolio):
                     self.metrics(mu,Q*0.5,w)
             else:
                 eff = effFront()
-                w = eff.optimize(Q=Q,mu=mu)
+                w = eff.optimize(Q=Q,mu=mu,plot=0)
                 self.w = w.flatten()
                 if stats==1:
                     self.metrics(mu,Q*0.5,w)
@@ -167,6 +187,7 @@ class strat_max_Sharpe(portfolio):
 
 class strat_min_variance(portfolio):
     def optimize(self,Q,mu,stats=0):
+            self.method = 'strat_min_variance'
             self.init_opt(Q,mu,sharpe=0)
             Q=2*Q
 
@@ -189,6 +210,7 @@ class strat_min_variance(portfolio):
 
 class strat_max_return(portfolio):
     def optimize(self,Q,mu,stats=0):
+        self.method = 'strat_max_return'
         self.init_opt(Q,mu,sharpe=0)
         Q=2*Q
 
@@ -212,7 +234,8 @@ class effFront(portfolio):
         #def __init__(self,steps=100,rf = 0.0001):
         steps = 500
 
-        def optimize(self,Q,mu,stats=0):
+        def optimize(self,Q,mu,stats=0,plot=0):
+            self.method = 'effFront'
             self.Q = Q
             self.mu = mu
             #self.share_balance = share_balance
@@ -223,6 +246,10 @@ class effFront(portfolio):
             self.max_sharpe()
             #print("Result with optimization:")
             #self.maxSharpe = strat_max_Sharpe().optimize(self.Q,self.mu)
+            if plot==1:
+                self.cloud()
+                self.plot()
+
             return self.w_sharpe
 
         def get_return_range(self):
@@ -258,7 +285,53 @@ class effFront(portfolio):
             self.w_minVar = strat_min_variance(self.share_balance).optimize(self.Q,self.mu,stats=0)
 
         def plot(self):
-            plt.scatter(self.stds,self.e)
+            plt.figure()
+            w_maxRet = self.w_maxRet
+            w_minVar = self.w_minVar
+            w_sharpe = self.w_sharpe
+            ports = [w_maxRet,w_minVar,w_sharpe]
+
+            std = self.stds
+            ret = self.e
+            std = np.array([x*math.sqrt(252) for x in std])
+            ret = (ret+1)**252-1
+            plt.title("Efficient frontier")
+            plt.xlabel("std")
+            plt.ylabel("return")
+            plt.scatter(std,ret)
+            for x in ports:
+                ret = x.T.dot(self.mu)
+                std = x.T.dot(self.Q).dot(x)
+                std = std*math.sqrt(252)
+                ret = (ret+1)**252-1
+                plt.scatter(std,ret)
+
+            plt.scatter(self.cloud_std,self.cloud_ret)
+            asset_ret = (self.mu+1)**252-1
+            asset_std = np.array([x*math.sqrt(252) for x in np.diag(self.Q)])
+            plt.scatter(asset_std,asset_ret)
+            plt.plot()
+
+
+        def cloud(self):
+            self.cloud_n = 1000
+            ret_ = []
+            std_ = []
+            w = np.random.rand(self.cloud_n,max(self.mu.shape))
+            w_ = np.sum(w,axis=1)[np.newaxis,:]
+            c = w.T/w_
+            w = c.T
+            print("sanity check: {}".format(np.sum(np.sum(w,axis=1))/self.cloud_n==1))
+            ret = w.dot(self.mu.T)
+            std = np.diag(w.dot(self.Q).dot(w.T))
+
+            std = np.array([x*math.sqrt(252) for x in std])
+            ret = (ret+1)**252-1
+
+            self.cloud_ret = ret
+            self.cloud_std = std
+
+
 
         def max_sharpe(self):
             idx = np.argmax((self.e-self.rf)/self.stds)
@@ -268,6 +341,7 @@ class effFront(portfolio):
 
 class strat_equally_weighted(portfolio):
     def optimize(self,Q,mu,stats=0):
+        self.method = 'strat_equally_weighted'
         n = max(self.share_balance.shape)
         w = np.ones(n) * (1/n)
         self.w = w.flatten()
@@ -278,7 +352,7 @@ class strat_equally_weighted(portfolio):
 class strat_buy_and_hold(portfolio):
 
     def optimize(self,Q,mu,stats=0):
-        self.switch_2_buy_and_hold()
+        self.method = 'strat_buy_and_hold'
         self.w = self.w_buy_and_hold
         if stats==1:
             self.metrics(mu,Q*0.5,w)
