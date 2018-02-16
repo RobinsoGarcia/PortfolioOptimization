@@ -24,34 +24,34 @@ evaluate(strategy_list,port_data,t0=2,dt=2,rf=0.0001,T=24,start= '1/2/2015',plot
   port_data = {'init_port':init_port,'data_source':'toy',
   'start_date':'2015-01-01','end_date': '2016-12-31'}
 
-    init_port:
-      type(init_port) = dictionary
-      dictionary with all stock tickers to be considered) and the number of shares in the initial portfolio
-      *be aware that yahoo finance package not always find the ticker you asked for. An error will be returned if that happen. Also, for some reason the package fails to aquire data at some attempts. I suggest shuting down the python kernel and trying at least three times. Otherwise, use a spreadsheet with our data.
+  init_port:
+    type(init_port) = dictionary
+    dictionary with all stock tickers to be considered) and the number of shares in the initial portfolio
+    *be aware that yahoo finance package not always find the ticker you asked for. An error will be returned if that happen. Also, for some reason the package fails to aquire data at some attempts. I suggest shuting down the python kernel and trying at least three times. Otherwise, use a spreadsheet with our data.
 
-    data_source:
-      type(data_source) = string
-      'toy' - uses a toy dataset contaning 20 stocks
-      'yahoo' - request stock data from yeahoo based on init_port
-    start_date:
-      type(start_date) = string
-      Starting date for the simulation to run from
-    end_date:
-      type(end_date) = string
-      end of the simulation
-    PS: the code is set to rebalance the portfolio at the last business day of the month.
-  t0:
-    type(t0) = int
-    number of periods after start_date before the first rebalancing operation.
-  dt:
-    type(dt): int
-    discrete time interval between rebalancing operations
-  T:
-    type(T) = int
-    total number of periods to consider
-  rf:
-    type(rf) = float
-    average daily interest rate.
+  data_source:
+    type(data_source) = string
+    'toy' - uses a toy dataset contaning 20 stocks
+    'yahoo' - request stock data from yeahoo based on init_port
+  start_date:
+    type(start_date) = string
+    Starting date for the simulation to run from
+  end_date:
+    type(end_date) = string
+    end of the simulation
+  PS: the code is set to rebalance the portfolio at the last business day of the month.
+t0:
+  type(t0) = int
+  number of periods after start_date before the first rebalancing operation.
+dt:
+  type(dt): int
+  discrete time interval between rebalancing operations
+T:
+  type(T) = int
+  total number of periods to consider
+rf:
+  type(rf) = float
+  average daily interest rate.
 
 OUTPUT:
   Weight distribution plots
