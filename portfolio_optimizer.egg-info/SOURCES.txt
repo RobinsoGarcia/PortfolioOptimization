@@ -1,4 +1,12 @@
+LICENSE.txt
+MANIFEST.in
+README.md
+requirements.txt
 setup.py
+portfolio_optimizer/Daily_closing_prices.csv
+portfolio_optimizer/__file__.py
+portfolio_optimizer/__init__.py
+portfolio_optimizer/__main__.py
 portfolio_optimizer/backtest.py
 portfolio_optimizer/evaluate_port.py
 portfolio_optimizer/load_data.py
@@ -6,5 +14,6 @@ portfolio_optimizer/port.py
 portfolio_optimizer.egg-info/PKG-INFO
 portfolio_optimizer.egg-info/SOURCES.txt
 portfolio_optimizer.egg-info/dependency_links.txt
+portfolio_optimizer.egg-info/entry_points.txt
 portfolio_optimizer.egg-info/not-zip-safe
 portfolio_optimizer.egg-info/top_level.txt

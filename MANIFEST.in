@@ -1,7 +1,9 @@
-include LICENSE
+include portfolio_optimizer/Daily_closing_prices.csv
+
+include init_port.pkl
+
+include LICENSE.txt
 
 include README.md
 
 include requirements.txt
-
-include portfolio_optimizer/load_data/Daily_closing_prices.to_csv

@@ -13,14 +13,7 @@ def help():
     print("The default parameters are:\n t0=2,dt=2,rf=0.0001,T=24,start= '1/2/2015',plot_eff=0")
     pass
 
-def evaluate(strategy_list,port_data,backtest,t0=2,dt=2,rf=0.0001,T=24,plot_eff=0):
-
-    if backtest is not None:
-        t0 = backtest['t0']
-        T = backtest['T']
-        dt = backtest['dt']
-        rf = backtest['rf']
-        plot_eff = backtest['plot_eff']
+def evaluate(strategy_list,port_data,t0=2,dt=2,rf=0.0001,T=24,plot_eff=0):
 
     if port_data['data_source']=='yahoo':
         returns,data,V_0,share_balance,stocks = load_data.data_reader(port_data)

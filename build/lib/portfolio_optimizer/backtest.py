@@ -1,10 +1,8 @@
-import matplotlib
-matplotlib.use('Agg')
+
 import portfolio_optimizer.port as prt
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-
 
 def get_business_day(date,data):
     count=1
@@ -50,7 +48,7 @@ def get_data(t,dt,period,data):
     p: stock price dataframe from last period up until t [t-1:t].
     returns: 2d array of stock returns for the specified period [start:t].
     '''
-
+    
     data = data.loc[period['beg'][0]:period['end'][t-1]]
     returns = data.shift(1)/data-1
 
@@ -135,5 +133,5 @@ def backtest_port(port1,data,start,end,t0=2,dt=2,rf=0.0001,T=24,plot_eff=0,repor
     port1.W = pd.DataFrame(W,columns=port1.stocks,index=pd.DatetimeIndex(index).normalize())
     plt.figure()
     port1.W.plot(kind='bar',title="Dynamic allocation "+port1.method,stacked=True).legend(loc='center left', bbox_to_anchor=(1, 0.5))
-    plt.show()
+
     return W,log

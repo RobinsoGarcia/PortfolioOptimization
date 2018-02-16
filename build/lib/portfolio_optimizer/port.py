@@ -1,9 +1,6 @@
-import matplotlib
-matplotlib.use('Agg')
 import pandas as pd
 import numpy as np
-import portfolio_optimizer
-import os
+#import functions
 from cvxopt import matrix
 from cvxopt import solvers
 import matplotlib.pyplot as plt
@@ -14,8 +11,7 @@ solvers.options['show_progress'] = False
 solvers.options['max_iters'] = 100
 
 def load_data():
-    csv = os.path.join(portfolio_optimizer.__path__[0],'Daily_closing_prices.csv')
-    data = pd.read_csv(csv,index_col='Date')
+    data = pd.read_csv('portfolio_optimizer/Daily_closing_prices.csv',index_col='Date')
     data.index = pd.to_datetime(data.index)
     data = data.drop(['YHOO'],axis=1)
     returns = data.shift(1)/data-1
