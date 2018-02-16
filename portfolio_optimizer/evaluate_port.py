@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import math
 
-
 #%matplotlib inline
 plt.style.use('ggplot')
 def help():
@@ -51,9 +50,7 @@ def evaluate(strategy_list,port_data,backtest,t0=2,dt=2,rf=0.0001,T=24,plot_eff=
     summary['beg'] = log['beg']
     summary['end'] = log['end']
     summary = pd.DataFrame(summary)
-    summary.to_csv('summary.csv')
-
-
+    
     total_ret = pd.DataFrame(data=value,index=strat,columns=['return'])
     total_ret.T.plot(title='portfolio total return',table=True,kind='bar',alpha=0.5,sort_columns=True,use_index=False)
     day_ret = pd.DataFrame(daily_returns,columns=daily_returns.keys(),index=port.time)
