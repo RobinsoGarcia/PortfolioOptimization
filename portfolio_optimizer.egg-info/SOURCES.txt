@@ -16,4 +16,5 @@ portfolio_optimizer.egg-info/SOURCES.txt
 portfolio_optimizer.egg-info/dependency_links.txt
 portfolio_optimizer.egg-info/entry_points.txt
 portfolio_optimizer.egg-info/not-zip-safe
+portfolio_optimizer.egg-info/requires.txt
 portfolio_optimizer.egg-info/top_level.txt

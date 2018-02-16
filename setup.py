@@ -25,13 +25,14 @@ setup(name='portfolio_optimizer',
       packages=['portfolio_optimizer'],
       package_data={'portfolio_optimizer':['portfolio_optimizer/*.csv','portfolio_optimizer/*.json']},
       zip_safe=False,
-      cmdclass={'install':adjustments})
+      cmdclass={'install':adjustments},
+      install_requires=[
+          'cvxopt>=1.1.9',
+          'numpy>=1.14.0',
+          'pandas>-0.22.0'
+          'matplotlib>=2.1.2',
+          'yahoo-finance>=1.4.0'
+      ]
+      )
 
 
-install_requires=[
-'cvxopt>=1.1.9',
-'numpy>=1.14.0',
-'pandas>-0.22.0'
-'matplotlib>=2.1.2',
-'yahoo-finance>=1.4.0'
-]
