@@ -1,71 +1,77 @@
 
 Installation:
-The package needs to be installed as sudo user in order to add the portopt script to your /usr/local/bin folder so that it is callable from any folder. If you choose not to install with sudo, just download the __main__.py file and run it were your Json file is.
+    The package needs to be installed as sudo user in order to add the portopt script to your /usr/local/bin folder so that it is callable from any folder. If you choose not to install with sudo, just download the __main__.py file and run it were your Json file is.
 
 
 Basic usage:
-One can use this code just by filling a json file and running portopt command using the command line at the directory where the Json file is located.
+    One can use this code just by filling a json file and running portopt command using the command line at the directory where the Json file is located.
 
 json sample:
 
-{"data":
-    {"init_port":   {"AAPL": 3000, "AMD": 0,
-                    "AMZN": 0, "BAC": 0, "BK": 0,
-                    "CRAY": 2000, "CSCO": 0, "F": 950,
-                    "GOOG": 0, "HOG": 0, "HPQ": 0, "IBM": 1500,
-                    "INTC": 0, "MS": 0, "MSFT": 5000, "NVDA": 1001,
-                    "SNE": 0, "T": 0, "VZ": 2000},
-                    "data_source": "toy",
-                    "start_date": "2015-01-01",
-                    "end_date": "2016-12-31"},
-       "strategies": ["strat_buy_and_hold",
-                      "strat_equally_weighted",
-                      "strat_max_Sharpe",
-                      "strat_max_Sharpe_eff",
-                      "strat_min_variance"],
-        "backtest": {"t0": 2, "dt": 2, "rf": 0.0001,
-                      "T": 24, "plot_eff": 0}
-}
 
-
+            {"data":
+                {"init_port":   {"AAPL": 3000, "AMD": 0,
+                                "AMZN": 0, "BAC": 0, "BK": 0,
+                                "CRAY": 2000, "CSCO": 0, "F": 950,
+                                "GOOG": 0, "HOG": 0, "HPQ": 0, "IBM": 1500,
+                                "INTC": 0, "MS": 0, "MSFT": 5000, "NVDA": 1001,
+                                "SNE": 0, "T": 0, "VZ": 2000},
+                                "data_source": "toy",
+                                "start_date": "2015-01-01",
+                                "end_date": "2016-12-31"},
+                   "strategies": ["strat_buy_and_hold",
+                                  "strat_equally_weighted",
+                                  "strat_max_Sharpe",
+                                  "strat_max_Sharpe_eff",
+                                  "strat_min_variance"],
+                    "backtest": {"t0": 2, "dt": 2, "rf": 0.0001,
+                                  "T": 24, "plot_eff": 0}
+            }
+  
+  
 init_port:
-  initial portfolio:
-    tyoe() = dictionary
-    tickers and allocation (# of shares)
-  data_source:
-    type(data_source) = string
-    'toy' - uses a toy dataset contaning 20 stocks
-    'yahoo' - request stock data from yeahoo based on init_port
-  start_date:
-    type(start_date) = string
-    Starting date for the simulation to run from
-  end_date:
-    type(end_date) = string
-    end of the simulation
-  PS: the code is set to rebalance the portfolio at the last business day of the month.
+     
+     
+          initial portfolio:
+            type() = dictionary
+            tickers and allocation (# of shares)
+          data_source:
+            type(data_source) = string
+            'toy' - uses a toy dataset contaning 20 stocks
+            'yahoo' - request stock data from yeahoo based on init_port
+          start_date:
+            type(start_date) = string
+            Starting date for the simulation to run from
+          end_date:
+            type(end_date) = string
+            end of the simulation
+          PS: the code is set to rebalance the portfolio at the last business day of the month.
 
-strategies:
-    type() =list(string)
-    'strat_min_variance' : return the minimum variance portfolio
-    'strat_max_Sharpe'  : returns the maximum sharpe portfolio
-    'strat_max_return' : returns the maximum return portfolio
-    'strat_equally_weighted': returns the equally weighted portfolio
-    'strat_buy_and_hold' : keeps the initial portfolio until the end of the simulation
+ strategies:
+    
+    
+        type() =list(string)
+        'strat_min_variance' : return the minimum variance portfolio
+        'strat_max_Sharpe'  : returns the maximum sharpe portfolio
+        'strat_max_return' : returns the maximum return portfolio
+        'strat_equally_weighted': returns the equally weighted portfolio
+        'strat_buy_and_hold' : keeps the initial portfolio until the end of the simulation
 
-backtest: 
-t0:
-  type(t0) = int
-  number of periods after start_date before the first rebalancing operation.
-dt:
-  type(dt): int
-  discrete time interval between rebalancing operations
-T:
-  type(T) = int
-  total number of periods to consider
-rf:
-  type(rf) = float
-  average daily interest rate.
- 
+   backtest:    
+
+        t0:
+          type(t0) = int
+          number of periods after start_date before the first rebalancing operation.
+        dt:
+          type(dt): int
+          discrete time interval between rebalancing operations
+        T:
+          type(T) = int
+          total number of periods to consider
+        rf:
+          type(rf) = float
+          average daily interest rate.
+
  
 Additonal data:
 
