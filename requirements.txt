@@ -1,0 +1,7 @@
+cvxopt>=1.1.9
+
+numpy>=1.14.0
+
+pandas>-0.22.0
+
+matplotlib>=2.1.2

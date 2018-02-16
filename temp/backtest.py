@@ -1,5 +1,5 @@
 
-import port as prt
+import portfolio_optimizer.port as prt
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -51,7 +51,7 @@ def get_data(t,dt,period,data):
     p = data[period['beg'][t-dt]:]
     return Q,mu,p
 
-def backtest_port(port1,data,t0=2,dt=2,rf=0.0001,T=24,start= '1/2/2015',plot_eff=0) :
+def backtest_port(port1,data,t0=2,dt=2,rf=0.0001,T=24,start= '1/2/2015',plot_eff=0,report=0) :
     '''
     backtest repeatedly get Q,mu,p,ret for a prespecifier time window.
     Q,mu and ret reflect all values from start until t, while p is
@@ -115,19 +115,14 @@ def backtest_port(port1,data,t0=2,dt=2,rf=0.0001,T=24,start= '1/2/2015',plot_eff
         log['cash'] = port1.cash_hist
 
     log = pd.DataFrame(log,columns=log.keys())
-    print("\n",log)
+    if report==1:
+        print("\n",log)
 
     real_ret = (port1.V_hist[-1:]-port1.V_hist[0])/port1.V_hist[0]
     print("\n Total portfolio Valorization: {}".format(real_ret))
-
-    #plt.figure()
-    #port1.plot_cash(log['end'])
-
-    #plt.figure()
-    #port1.plot_dailyV()
 
     port1.W = pd.DataFrame(W,columns=port1.stocks,index=pd.DatetimeIndex(index).normalize())
     plt.figure()
     port1.W.plot(kind='bar',title="Dynamic allocation "+port1.method,stacked=True).legend(loc='center left', bbox_to_anchor=(1, 0.5))
 
-    return W
+    return W,log

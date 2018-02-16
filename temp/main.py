@@ -50,7 +50,7 @@ summary = {}
 for x in strategies:
     print(x)
     port = strategies[x]
-    w,log = bkt.backtest_port(port,data,t0=2,dt=2,rf=0.0001,T=24,start= '1/2/2015',plot_eff=0)
+    w,log = bkt.backtest_port(port,data,t0=2,dt=2,rf=0.0001,T=24,start= '1/2/2015',plot_eff=1)
     value.append(float((port.V_hist[-1:]-port.V_hist[0])/port.V_hist[0]))
     strat.append(x)
     daily_returns[x]=port.dailyV

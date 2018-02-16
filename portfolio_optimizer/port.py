@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-import functions
+#import functions
 from cvxopt import matrix
 from cvxopt import solvers
 import matplotlib.pyplot as plt
@@ -8,11 +8,12 @@ import math
 import matplotlib.dates as mdates
 
 solvers.options['show_progress'] = False
-solvers.options['max_iters'] = 200
+solvers.options['max_iters'] = 100
 
 def load_data():
-    data = pd.read_csv('Daily_closing_prices.csv',index_col='Date')
+    data = pd.read_csv('portfolio_optimizer/Daily_closing_prices.csv',index_col='Date')
     data.index = pd.to_datetime(data.index)
+    data = data.drop(['YHOO'],axis=1)
     returns = data.shift(1)/data-1
     return data,returns
 
@@ -20,6 +21,8 @@ def cov(returns):
     X = np.array(returns)[1:]
     X -= np.mean(X,axis=0)
     Q = np.dot(X.T,X)/X.shape[0]
+    #print(Q.shape)
+    #print(Q)
     U, s, V = np.linalg.svd(Q)
     if np.min(s)<0:
         s[s<0]=0.001
@@ -54,8 +57,6 @@ class portfolio():
         self.time=pd.DatetimeIndex([])
         self.buy_h=buy_h
         self.W = None
-
-
 
     def switch_2_buy_and_hold(self):
         self.rebalancing = 0
@@ -100,7 +101,7 @@ class portfolio():
             w = self.w
             #w[w<0.001]=0
             new_balance = np.array(np.divide(w*np.sum(self.V),p))
-            new_balance[new_balance<1]=0
+            #new_balance[new_balance<1]=0
             new_balance = np.round(new_balance)
             transactions = -1*(new_balance-self.share_balance)
             cash = float(np.dot(transactions,p.T))*self.cost
@@ -114,8 +115,10 @@ class portfolio():
                 cash = float(np.dot(transactions,p.T))*self.cost
             #print("cash after loop: {}".format(cash))
 
+
             self.share_balance = new_balance
             self.w = new_balance/np.sum(new_balance)
+            #print("cash_account_adjustments_effect_on_w:",np.linalg.norm(w-self.w))
             self.cash_hist.append(cash)
         pass
 

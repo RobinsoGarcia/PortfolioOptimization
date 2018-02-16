@@ -4,9 +4,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import math
-
-#%matplotlib inline
-plt.style.use('ggplot')
+%matplotlib inline
+'''
+Compares the sharpe optimized portfolio with
+the max shapre obtained from a  dicrete
+efficient get_eff_frontier
+'''
 
 def load_info():
     '''
@@ -37,11 +40,8 @@ def load_info():
 
 returns,data,V_0,share_balance,stocks = load_info()
 
-strategies = {'strat_buy_and_hold':prt.strat_buy_and_hold(stocks=stocks,share_balance = share_balance,V = V_0,buy_h=1),
-                'strat_equally_weighted':prt.strat_equally_weighted(stocks=stocks,share_balance = share_balance,V = V_0),
-                'strat_max_Sharpe':prt.strat_max_Sharpe(stocks=stocks,share_balance = share_balance,V = V_0),
-                'strat_max_Sharpe_eff':prt.strat_max_Sharpe(stocks=stocks,share_balance = share_balance,V = V_0,use_eff=1),
-                'strat_min_variance':prt.strat_min_variance(stocks=stocks,share_balance = share_balance,V = V_0)}
+strategies = {'strat_max_Sharpe':prt.strat_max_Sharpe(stocks=stocks,share_balance = share_balance,V = V_0),
+                'strat_max_Sharpe_eff':prt.strat_max_Sharpe(stocks=stocks,share_balance = share_balance,V = V_0,use_eff=1)}
 
 value = []
 strat = []
@@ -50,7 +50,7 @@ summary = {}
 for x in strategies:
     print(x)
     port = strategies[x]
-    w,log = bkt.backtest_port(port,data,t0=2,dt=2,rf=0.0001,T=24,start= '1/2/2015',plot_eff=0)
+    w,log = bkt.backtest_port(port,data,t0=2,dt=2,rf=0.0001,T=24,start= '1/2/2015',plot_eff=1)
     value.append(float((port.V_hist[-1:]-port.V_hist[0])/port.V_hist[0]))
     strat.append(x)
     daily_returns[x]=port.dailyV
@@ -67,4 +67,4 @@ day_ret = pd.DataFrame(daily_returns,columns=daily_returns.keys(),index=port.tim
 day_ret.plot()
 print(summary)
 print(total_ret)
-plt.show()
+#plt.show()
