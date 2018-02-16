@@ -1,5 +1,5 @@
 
-Instalation:
+Installation:
 The package needs to be installed as sudo user in order to add the portopt script to your /usr/local/bin folder so that it is callable from any folder. If you choose not to install with sudo, just download the __main__.py file and run it were your Json file is.
 
 
