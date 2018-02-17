@@ -1,14 +1,11 @@
-
-Installation:
-    The package needs to be installed as sudo user in order to add the portopt script to your /usr/local/bin folder so that it is callable from any folder. If you choose not to install with sudo, just download the __main__.py file and run it were your Json file is.
-
-
-Basic usage:
-    One can use this code just by filling a json file and running portopt command using the command line at the directory where the Json file is located.
-
-json sample:
+# Installation
+The package needs to be installed as sudo user in order to add the portopt script to your /usr/local/bin folder so that it is callable from any folder. If you choose not to install with sudo, just download the __main__.py file and run it where your Json file is.
 
 
+# Basic usage
+One can use this code just by filling a json file and running portopt command using the command line at the directory where the Json file is located.
+
+# Json sample
             {"data":
                 {"init_port":   {"AAPL": 3000, "AMD": 0,
                                 "AMZN": 0, "BAC": 0, "BK": 0,
@@ -28,10 +25,7 @@ json sample:
                                   "T": 24, "plot_eff": 0}
             }
   
-  
-init_port:
-     
-     
+# init_port:  
           initial portfolio:
             type() = dictionary
             tickers and allocation (# of shares)
@@ -47,9 +41,7 @@ init_port:
             end of the simulation
           PS: the code is set to rebalance the portfolio at the last business day of the month.
 
- strategies:
-    
-    
+##   strategies
         type() =list(string)
         'strat_min_variance' : return the minimum variance portfolio
         'strat_max_Sharpe'  : returns the maximum sharpe portfolio
@@ -57,8 +49,7 @@ init_port:
         'strat_equally_weighted': returns the equally weighted portfolio
         'strat_buy_and_hold' : keeps the initial portfolio until the end of the simulation
 
-   backtest:    
-
+##   backtest
         t0:
           type(t0) = int
           number of periods after start_date before the first rebalancing operation.
@@ -73,35 +64,36 @@ init_port:
           average daily interest rate.
 
  
-Additonal data:
+# Additional data
 
-[1] if the data source is yahoo-finance python package, one should be advised that this package
+1. if the data source is yahoo-finance python package, one should be advised that this package
 very often sends an error message such as no data was retrieved or something else.
 
-[2] The sharpe's portfolio is sensitive to the data used. eg. when performing analysis with the toy dataset, if we include november and december/14, the return for the max sharpe portfolio is severely different. The real returns are:
+2. The sharpe's portfolio is sensitive to the data used. eg. when performing analysis with the toy dataset, if we include november and december/14, the return for the max sharpe portfolio is severely different. The real returns are:
 
-max_sharpe = 0.57 | backtest | get_data(); data = data.loc[:period['end'][t-1]]
-equally_weighted = 0.40 | backtest | get_data(); data = data.loc[:period['end'][t-1]]
+    max_sharpe = 0.57 | backtest | get_data(); data = data.loc[:period['end'][t-1]]
+    equally_weighted = 0.40 | backtest | get_data(); data = data.loc[:period['end'][t-1]]
 
-max_sharpe = 0.30 | backtest | get_data(); data = data.loc[period['beg'][0]:period['end'][t-1]]
-equally_weighted = 0.0.40 | backtest | get_data(); data = data.loc[period['beg'][0]:period['end'][t-1]]
+    max_sharpe = 0.30 | backtest | get_data(); data = data.loc[period['beg'][0]:period['end'][t-1]]
+    equally_weighted = 0.0.40 | backtest | get_data(); data = data.loc[period['beg'][0]:period['end'][t-1]]
 
-[3] The evaluate function runs the backtest script on different portfolio strategies to create comparsion metrics and charts.
+3.  The evaluate function runs the backtest script on different portfolio strategies to create comparsion metrics and 
+    charts.
 
-evaluate(strategy_list,port_data,t0=2,dt=2,rf=0.0001,T=24,start= '1/2/2015',plot_eff=0)
+    `evaluate(strategy_list,port_data,t0=2,dt=2,rf=0.0001,T=24,start= '1/2/2015',plot_eff=0)`
 
-  strategies = ['strat_buy_and_hold',
+    strategies = ['strat_buy_and_hold',
                   'strat_equally_weighted',
                   'strat_max_Sharpe',
                   'strat_max_Sharpe_eff',
                   'strat_min_variance']
-  port_data = {'init_port':init_port,'data_source':'toy',
-  'start_date':'2015-01-01','end_date': '2016-12-31'}
+    port_data = {'init_port':init_port,'data_source':'toy',
+   'start_date':'2015-01-01','end_date': '2016-12-31'}
 
   init_port:
-    type(init_port) = dictionary
-    dictionary with all stock tickers to be considered) and the number of shares in the initial portfolio
-    *be aware that yahoo finance package not always find the ticker you asked for. An error will be returned if that happen. Also, for some reason the package fails to aquire data at some attempts. I suggest shuting down the python kernel and trying at least three times. Otherwise, use a spreadsheet with our data.
+    type(init_port) = dictionary with all stock tickers to be considered) and the number of shares in the initial 
+    portfolio
+    *be aware that yahoo finance package not always find the ticker you asked for. An error will be returned if that happens. Also, for some reason, the package fails to acquire data at some attempts. I suggest shutting down the python kernel and trying at least three times. Otherwise, use a spreadsheet with our data.
 
   data_source:
     type(data_source) = string
