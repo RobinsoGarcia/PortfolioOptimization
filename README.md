@@ -6,6 +6,8 @@ The package needs to be installed as sudo user in order to add the portopt scrip
 One can use this code just by filling a json file and running portopt command using the command line at the directory where the Json file is located.
 
 # Json sample
+Use a Json file in conjunction with the command line portopt to run the simulation process, eg: python3 portopt 'filename.json'.
+
             {"data":
                 {"init_port":   {"AAPL": 3000, "AMD": 0,
                                 "AMZN": 0, "BAC": 0, "BK": 0,
