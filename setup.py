@@ -13,6 +13,7 @@ class adjustments(install):
         os.system('chmod -R 777 /usr/local/bin/portopt.py')
         print('done adjustments')
 
+
 setup(name='portfolio_optimizer',
       version='0',
       description='Portfolio optimization and backtesting',
@@ -22,7 +23,7 @@ setup(name='portfolio_optimizer',
       license='MIT',
       entry_points={'console_scripts':['portopt = portfolio_optimizer.__main__:main']},
       include_package_data=True,
-      packages=['portfolio_optimizer'],
+      packages=['portfolio_optimizer','portfolio_optimizer.load_data_'],
       package_data={'portfolio_optimizer':['portfolio_optimizer/*.csv','portfolio_optimizer/*.json']},
       zip_safe=False,
       cmdclass={'install':adjustments},

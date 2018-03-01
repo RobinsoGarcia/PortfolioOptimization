@@ -12,7 +12,7 @@ def help():
     print("The default parameters are:\n t0=2,dt=2,rf=0.0001,T=24,start= '1/2/2015',plot_eff=0")
     pass
 
-def evaluate(strategy_list,port_data,backtest,t0=2,dt=2,rf=0.0001,T=24,plot_eff=0):
+def evaluate(strategy_list,port_data,backtest,t0=2,dt=2,rf=0.025/252,T=24,plot_eff=0):
 
     if backtest is not None:
         t0 = backtest['t0']
@@ -50,7 +50,7 @@ def evaluate(strategy_list,port_data,backtest,t0=2,dt=2,rf=0.0001,T=24,plot_eff=
     summary['beg'] = log['beg']
     summary['end'] = log['end']
     summary = pd.DataFrame(summary)
-    
+
     total_ret = pd.DataFrame(data=value,index=strat,columns=['return'])
     total_ret.T.plot(title='portfolio total return',table=True,kind='bar',alpha=0.5,sort_columns=True,use_index=False)
     day_ret = pd.DataFrame(daily_returns,columns=daily_returns.keys(),index=port.time)

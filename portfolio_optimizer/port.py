@@ -1,5 +1,4 @@
 import matplotlib
-matplotlib.use('Agg')
 import pandas as pd
 import numpy as np
 import portfolio_optimizer
@@ -24,7 +23,7 @@ def load_data():
 def cov(returns):
     X = np.array(returns)[1:]
     X -= np.mean(X,axis=0)
-    Q = np.dot(X.T,X)/X.shape[0]
+    Q = np.dot(X.T,X)/(X.shape[0]-1)
     #print(Q.shape)
     #print(Q)
     U, s, V = np.linalg.svd(Q)

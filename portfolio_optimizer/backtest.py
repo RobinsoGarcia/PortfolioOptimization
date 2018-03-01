@@ -1,5 +1,4 @@
 import matplotlib
-matplotlib.use('Agg')
 import portfolio_optimizer.port as prt
 import numpy as np
 import matplotlib.pyplot as plt
@@ -50,8 +49,8 @@ def get_data(t,dt,period,data):
     p: stock price dataframe from last period up until t [t-1:t].
     returns: 2d array of stock returns for the specified period [start:t].
     '''
-
-    data = data.loc[period['beg'][0]:period['end'][t-1]]
+    #period['beg'][0]
+    data = data.loc[:period['end'][t-1]]
     returns = data.shift(1)/data-1
 
     Q = np.array(prt.cov(returns))
