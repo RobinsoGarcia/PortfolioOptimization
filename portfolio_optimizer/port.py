@@ -26,11 +26,12 @@ def cov(returns):
     Q = np.dot(X.T,X)/(X.shape[0]-1)
     #print(Q.shape)
     #print(Q)
-    U, s, V = np.linalg.svd(Q)
+    U,s,V = np.linalg.svd(X,full_matrices=False)
+
     if np.min(s)<0:
         s[s<0]=0.001
-        new_Q = np.matmul(np.matmul(U,np.diag(s)),V.T)
-        diff = np.linalg.norm(Q_new.flatten() - Q.flatten(),ord='forb')
+        new_Q = np.matmul(U,S*V)
+        diff = np.linalg.norm(Q_new - Q.flatten(),ord='fro')
         print("covariance adjusted, forbenius norm: {}".fornat(diff))
         Q = new_Q
     return Q
@@ -41,6 +42,11 @@ class portfolio():
 
         self.p = p
         self.share_balance = share_balance
+        if not np.sum(share_balance):
+            pass
+        else:
+            self.w_buy_and_hold = share_balance/np.sum(share_balance)
+     
         self.rebalancing = 1
         self.buy_h = buy_h
         if self.buy_h==1:
@@ -59,7 +65,7 @@ class portfolio():
         self.stocks = stocks
         self.time=pd.DatetimeIndex([])
         self.buy_h=buy_h
-        self.W = None
+        self.W = []
 
     def switch_2_buy_and_hold(self):
         self.rebalancing = 0
@@ -67,11 +73,13 @@ class portfolio():
     def update_V(self,p,rf=0.0001,t=2):
         self.rf = rf
         self.p = p[-1:].values
+        
         dv = np.sum(self.share_balance*p,axis=1)
         self.dailyV = np.hstack([self.dailyV,dv])
         self.time = np.concatenate((self.time,p.index))
+       
         new_V = self.p*self.share_balance
-        total_value = np.sum(new_V) + self.cash_account*(1+rf)**t
+        total_value = np.sum(new_V) + self.cash_account*(1+rf)**float(t)
         self.V_hist.append(total_value)
         self.V_gain.append(total_value/np.sum(self.V))
         self.V = new_V
@@ -121,8 +129,10 @@ class portfolio():
 
             self.share_balance = new_balance
             self.w = new_balance/np.sum(new_balance)
+            self.W[-1:]=self.w
             #print("cash_account_adjustments_effect_on_w:",np.linalg.norm(w-self.w))
             self.cash_hist.append(cash)
+            
         pass
 
     def metrics(self,mu,Q,w):
@@ -188,7 +198,7 @@ class strat_max_Sharpe(portfolio):
                 if stats==1:
                     self.metrics(mu,Q*0.5,w)
 
-
+            self.W.append(self.w)
             return self.w
 
 class strat_min_variance(portfolio):
@@ -211,7 +221,7 @@ class strat_min_variance(portfolio):
             if stats==1:
                 self.metrics(mu,Q*0.5,w)
 
-
+            self.W.append(self.w)
             return w
 
 class strat_max_return(portfolio):
@@ -233,6 +243,7 @@ class strat_max_return(portfolio):
         self.w = w
         if stats==1:
             self.metrics(mu,Q*0.5,w)
+        self.W.append(self.w)
 
         return w
 
@@ -342,6 +353,7 @@ class effFront(portfolio):
         def max_sharpe(self):
             idx = np.argmax((self.e-self.rf)/self.stds)
             self.w_sharpe = self.w_eff[idx]
+            self.W.append(self.w_sharpe)
             #self.metrics(self.mu,self.Q,self.w_sharpe)
             pass
 
@@ -353,6 +365,7 @@ class strat_equally_weighted(portfolio):
         self.w = w.flatten()
         if stats==1:
             self.metrics(mu,Q*0.5,w)
+        self.W.append(self.w)
         return self.w
 
 class strat_buy_and_hold(portfolio):
@@ -362,4 +375,5 @@ class strat_buy_and_hold(portfolio):
         self.w = self.w_buy_and_hold
         if stats==1:
             self.metrics(mu,Q*0.5,w)
+        self.W.append(self.w)
         return self.w

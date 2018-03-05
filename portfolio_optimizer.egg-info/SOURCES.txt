@@ -18,3 +18,5 @@ portfolio_optimizer.egg-info/entry_points.txt
 portfolio_optimizer.egg-info/not-zip-safe
 portfolio_optimizer.egg-info/requires.txt
 portfolio_optimizer.egg-info/top_level.txt
+portfolio_optimizer/load_data_/__init__.py
+portfolio_optimizer/load_data_/quandl.py
