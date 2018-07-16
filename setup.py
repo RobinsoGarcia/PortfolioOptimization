@@ -7,15 +7,14 @@ class adjustments(install):
         import portfolio_optimizer
         import sys
         import os
-        #path_port = os.path.abspath(os.path.dirname(sys.argv[0]))
-        path_port = 'usr/local/lib/python3.6/dist-packages/portfolio_optimizer*'
+        path_port = os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])),'scripts')
+        #path_port = 'usr/local/lib/python3.6/dist-packages/portfolio_optimizer*'
         os.system('chmod -R 777 /' + path_port)
         os.system('chmod -R 777 /usr/local/bin/build_dataset.py')
         os.system('chmod -R 777 /usr/local/bin/check_allport.py')
         os.system('chmod -R 777 /usr/local/bin/check_rebal.py')
         os.system('chmod -R 777 /usr/local/bin/check_returns.py')
         print('done adjustments')
-
 
 setup(name='portfolio_optimizer',
       version='0',
@@ -26,8 +25,8 @@ setup(name='portfolio_optimizer',
       license='MIT',
       entry_points={'console_scripts':['build_dataset = portfolio_optimizer.__main__:main']},
       include_package_data=True,
-      packages=['portfolio_optimizer'],
-      package_data={'portfolio_optimizer':['portfolio_optimizer/stock_data/*.csv']},
+      packages=['portfolio_optimizer','portfolio_optimizer.portfolio'],
+      package_data={'portfolio_optimizer':['stock_data/*.csv'],'portfolio_optimizer':['scripts/*']},
       zip_safe=False,
       cmdclass={'install':adjustments},
       install_requires=[
@@ -35,6 +34,7 @@ setup(name='portfolio_optimizer',
           'numpy>=1.14.0',
           'pandas>-0.22.0'
           'matplotlib>=2.1.2',
-          'yahoo-finance>=1.4.0'
+          'yahoo-finance>=1.4.0',
+          'scipy'
       ]
       )

@@ -1,9 +1,0 @@
-include portfolio_optimizer/Daily_closing_prices.csv
-
-include init_port.pkl
-
-include LICENSE.txt
-
-include README.md
-
-include requirements.txt

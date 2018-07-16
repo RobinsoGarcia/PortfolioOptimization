@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-import portfolio_optimizer.portfolio.port as prt
+import portfolio_optimizer.port as prt
 import sys
 import argparse
 import numpy as np
