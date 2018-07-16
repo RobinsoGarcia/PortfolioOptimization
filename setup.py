@@ -10,7 +10,10 @@ class adjustments(install):
         #path_port = os.path.abspath(os.path.dirname(sys.argv[0]))
         path_port = 'usr/local/lib/python3.6/dist-packages/portfolio_optimizer*'
         os.system('chmod -R 777 /' + path_port)
-        os.system('chmod -R 777 /usr/local/bin/portopt.py')
+        os.system('chmod -R 777 /usr/local/bin/build_dataset.py')
+        os.system('chmod -R 777 /usr/local/bin/check_allport.py')
+        os.system('chmod -R 777 /usr/local/bin/check_rebal.py')
+        os.system('chmod -R 777 /usr/local/bin/check_returns.py')
         print('done adjustments')
 
 
@@ -21,10 +24,10 @@ setup(name='portfolio_optimizer',
       author='Robinson Garcia',
       author_email='rlsg.mec@hotmail.com',
       license='MIT',
-      entry_points={'console_scripts':['portopt = portfolio_optimizer.__main__:main']},
+      entry_points={'console_scripts':['build_dataset = portfolio_optimizer.__main__:main']},
       include_package_data=True,
-      packages=['portfolio_optimizer','portfolio_optimizer.load_data_'],
-      package_data={'portfolio_optimizer':['portfolio_optimizer/*.csv','portfolio_optimizer/*.json']},
+      packages=['portfolio_optimizer'],
+      package_data={'portfolio_optimizer':['portfolio_optimizer/stock_data/*.csv']},
       zip_safe=False,
       cmdclass={'install':adjustments},
       install_requires=[
@@ -35,5 +38,3 @@ setup(name='portfolio_optimizer',
           'yahoo-finance>=1.4.0'
       ]
       )
-
-

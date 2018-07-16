@@ -1,3 +1,0 @@
-[console_scripts]
-portopt = portfolio_optimizer.__main__:main
-
