@@ -28,6 +28,8 @@ if __name__=="__main__":
 
     args = parser.parse_args()
 
+    print("lalalal")
+
     try:
         data = pd.read_csv(os.path.join(args.stock_folder,'Daily_closing_prices.csv'),parse_dates=['Date'],index_col='Date')
     except:
@@ -36,9 +38,8 @@ if __name__=="__main__":
     '''remove .csv from file name and make sure columns are in the same order as share balance'''
     data.columns = [i[:-4] for i in data.columns]
 
-    data = data.drop(['BRDT3.SA'],axis=1)
-
     data = data[args.stocks]
+
 
     try:
         v = data.loc[args.start].T.values*args.share_balance

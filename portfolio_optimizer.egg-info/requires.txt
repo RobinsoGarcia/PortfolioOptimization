@@ -1,0 +1,5 @@
+cvxopt>=1.1.9
+numpy>=1.14.0
+pandas>-0.22.0matplotlib>=2.1.2
+yahoo-finance>=1.4.0
+scipy

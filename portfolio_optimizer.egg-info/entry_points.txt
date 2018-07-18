@@ -1,0 +1,3 @@
+[console_scripts]
+build_dataset = portfolio_optimizer.__main__:main
+
