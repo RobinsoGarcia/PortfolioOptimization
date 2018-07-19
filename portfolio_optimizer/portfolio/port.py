@@ -138,7 +138,7 @@ class portfolio():
         print('Risk Contribution: {}'.format(RC))
         try:
             print('Optimzal allocation')
-            print(pd.Dataframe.from_dict(dict(zip(self.stocks,w)),orient='index'))
+            print(pd.DataFrame.from_dict(dict(zip(self.stocks,w)),orient='index'))
         except:
             print('Missing stock names')
 
@@ -316,14 +316,14 @@ class strat_max_Sharpe(portfolio):
                 w = np.array(y[:-1])/y[-1:]
                 self.w = w.flatten()
                 if stats==1:
-                    print('################################## max_Sharpe_optim ##################################')
+                    print('#### max_Sharpe_optim ####')
                     self.metrics(mu,Q*0.5,w)
             else:
                 eff = effFront()
                 w = eff.optimize(Q=Q,mu=mu,plot=0)
                 self.w = w.flatten()
                 if stats==1:
-                    print('################################## max_Sharpe_effF ##################################')
+                    print('\n#### max_Sharpe_effF ####')
                     self.metrics(mu,Q*0.5,w)
 
             self.W.append(self.w)
