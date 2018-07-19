@@ -88,12 +88,19 @@ class portfolio():
 
     def init_opt(self,Q,mu,sharpe=0):
         if sharpe==1:
-            self.G = -1*np.diag(np.ones(Q.shape[0]+1))
-            self.h = np.zeros(Q.shape[0]+1)
+            #self.G = -1*np.diag(np.ones(Q.shape[0]+1))
+            #self.h = np.zeros(Q.shape[0]+1)
             mu_ = mu-self.rf
+            self.A = mu_
+            self.b = [1.0]
+            self.G = -1*np.diag(np.ones(Q.shape[0]))
+            self.h = np.zeros(Q.shape[0])
+
+            '''
             self.A = np.vstack([mu_,np.ones(Q.shape[0])])
             self.A = np.hstack([self.A,np.array([[0],[-1]])])
             self.b = [1.0,0.0]
+            '''
         else:
             self.G = -1*np.diag(np.ones(Q.shape[0]))
             self.h = np.zeros(Q.shape[0])
@@ -135,12 +142,14 @@ class portfolio():
         print('Expected std: {}'.format(std))
         print('Expected sharpe: {}'.format(sharpe))
         RC = w*np.matmul(Q,w)/std
+        RC = [ '%.4f' % elem for elem in RC ]
         print('Risk Contribution: {}'.format(RC))
+        w = np.round(w,2)
         try:
             print('Optimzal allocation')
-            w = [ '%.2f' % elem for elem in w ]
-            df = pd.DataFrame.from_dict(dict(zip(self.stocks,w)),,orient='index')
-            df.columns='weight'
+
+            df = pd.DataFrame.from_dict(dict(zip(self.stocks,w)),orient='index')
+
             print(df)
         except:
             print('Missing stock names')
@@ -239,8 +248,9 @@ class effFront(portfolio):
             w_sharpe = self.w_sharpe
             w_sharpe_optim = self.w_sharpe_optim
             w_ERC = self.w_ERC
+            rf = (self.rf+1)**252-1
             ports = [w_maxRet,w_minVar,w_sharpe,w_sharpe_optim,w_ERC]
-            annotation = ['maxRet','minVar','sharpe','sharpe_optim','ERC']
+            annotation = ['maxRet','minVar','sharpe','w_sharpe_optim','ERC']
             std = self.stds
             ret = self.e
             std = np.array([x*math.sqrt(252) for x in std])
@@ -259,6 +269,8 @@ class effFront(portfolio):
                 #print(x)
                 #print(ret)
                 #print(std)
+            plt.scatter(0.0,rf,s=1000,marker='*')
+            plt.annotate('rf',(0,rf))
 
             plt.scatter(self.cloud_std,self.cloud_ret,alpha=0.1)
             asset_ret = (self.mu+1)**252-1
@@ -275,7 +287,7 @@ class effFront(portfolio):
 
 
         def cloud(self):
-            self.cloud_n = 1000
+            self.cloud_n = 500
             ret_ = []
             std_ = []
             w = np.random.rand(self.cloud_n,max(self.mu.shape))
@@ -306,21 +318,40 @@ class strat_max_Sharpe(portfolio):
             if self.use_eff==0:
                 self.init_opt(Q,mu,sharpe=1)
                 Q=2*Q
+                P = matrix(np.array(Q) ,tc='d')
+                q = matrix(np.zeros(Q.shape[0]),tc='d')
+                G = matrix(self.G,tc='d')
+                h = matrix(self.h,tc='d')
+                A = matrix(self.A[np.newaxis,:],tc='d') #diag(mu)
+                b = matrix(self.b,tc='d') #ones, vector
+                sol = solvers.qp(P,q,G,h,A,b)
+                y = np.array(sol['x'])
+                w = np.array(y)/np.sum(y)
+                self.w = w.flatten()
+                if stats==1:
+                    print('\n#### max_Sharpe_optim ####')
+                    self.metrics(mu,Q*0.5,w)
+
+
+                '''
+                self.init_opt(Q,mu,sharpe=1)
+                Q=2*Q
                 Q_ = np.hstack([Q,np.zeros((Q.shape[0],1))])
                 Q_ = np.vstack([Q_,np.zeros(Q_.shape[1])])
                 P = matrix(np.array(Q_) ,tc='d')
                 q = matrix(np.zeros(Q_.shape[0]),tc='d')
                 G = matrix(self.G,tc='d')
                 h = matrix(self.h,tc='d')
-                A = matrix(self.A,tc='d')
-                b = matrix(self.b,tc='d')
+                A = matrix(self.A,tc='d') #diag(mu)
+                b = matrix(self.b,tc='d') #ones, vector
                 sol = solvers.qp(P,q,G,h,A,b)
                 y = np.array(sol['x'])
                 w = np.array(y[:-1])/y[-1:]
                 self.w = w.flatten()
                 if stats==1:
-                    print('#### max_Sharpe_optim ####')
+                    print('\n#### max_Sharpe_optim ####')
                     self.metrics(mu,Q*0.5,w)
+                '''
             else:
                 eff = effFront()
                 w = eff.optimize(Q=Q,mu=mu,plot=0)

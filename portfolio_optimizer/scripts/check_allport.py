@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import pandas as pd
 import os
 import portfolio_optimizer.portfolio.port as prt
@@ -27,7 +28,7 @@ if __name__=="__main__":
 
     parser.add_argument("-s","--stocks",nargs='+',help="list of stock tickers")
 
-    parser.add_argument("-rf","--risk_free_rate",nargs='+',help="Risk free rate to be considered: influences the max sharpe portfolio")
+    parser.add_argument("-rf","--risk_free_rate",type=float,help="Risk free rate to be considered: influences the max sharpe portfolio")
 
     args = parser.parse_args()
 
@@ -37,7 +38,7 @@ if __name__=="__main__":
         print('first build Daily_closing...')
 
     try:
-        rf = args.rf
+        rf = args.risk_free_rate
     except:
         rf = 0.0001
 
