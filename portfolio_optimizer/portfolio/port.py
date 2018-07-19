@@ -138,7 +138,10 @@ class portfolio():
         print('Risk Contribution: {}'.format(RC))
         try:
             print('Optimzal allocation')
-            print(pd.DataFrame.from_dict(dict(zip(self.stocks,w)),orient='index'))
+            w = [ '%.2f' % elem for elem in w ]
+            df = pd.DataFrame.from_dict(dict(zip(self.stocks,w))
+            df.columns=['weight']
+            print(df,orient='index'))
         except:
             print('Missing stock names')
 
