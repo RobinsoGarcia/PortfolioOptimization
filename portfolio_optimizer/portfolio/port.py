@@ -140,7 +140,7 @@ class portfolio():
             print('Optimzal allocation')
             w = [ '%.2f' % elem for elem in w ]
             df = pd.DataFrame.from_dict(dict(zip(self.stocks,w))
-            df.columns=['weight']
+            df.columns='weight'
             print(df,orient='index'))
         except:
             print('Missing stock names')
