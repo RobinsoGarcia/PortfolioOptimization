@@ -138,7 +138,7 @@ class portfolio():
         print('Risk Contribution: {}'.format(RC))
         try:
             print('Optimzal allocation')
-            print(dict(zip(self.stocks,w)))
+            print(pd.Dataframe.from_dict(dict(zip(self.stocks,w)),orient='index'))
         except:
             print('Missing stock names')
 
@@ -253,9 +253,9 @@ class effFront(portfolio):
                 ret = (ret+1)**252-1
                 plt.scatter(std,ret,s=1000,marker='*')
                 plt.annotate(annotation[i],(std,ret))
-                print(x)
-                print(ret)
-                print(std)
+                #print(x)
+                #print(ret)
+                #print(std)
 
             plt.scatter(self.cloud_std,self.cloud_ret,alpha=0.1)
             asset_ret = (self.mu+1)**252-1
@@ -293,7 +293,7 @@ class effFront(portfolio):
             idx = np.argmax((self.e-self.rf)/self.stds)
             self.w_sharpe = self.w_eff[idx]
             self.W.append(self.w_sharpe)
-            print('################################## max_Sharpe_effF ##################################')
+            print('\n#### max_Sharpe_effF ####')
             self.metrics(self.mu,self.Q,self.w_sharpe)
             pass
 
@@ -347,7 +347,7 @@ class strat_min_variance(portfolio):
             w = np.array(sol['x']).flatten()
             self.w = w
             if stats==1:
-                print('################################## min_VAR_optim ##################################')
+                print('\n#### min_VAR_optim ####')
                 self.metrics(mu,Q*0.5,w)
 
             self.W.append(self.w)
@@ -371,7 +371,7 @@ class strat_max_return(portfolio):
         w = np.array(sol['x']).flatten()
         self.w = w
         if stats==1:
-            print('################################## max_Return_optim ##################################')
+            print('\n#### max_Return_optim ####')
             self.metrics(mu,Q*0.5,w)
         self.W.append(self.w)
 
@@ -426,7 +426,7 @@ class strat_equal_risk_contrib(portfolio):
         self.w = res.x
 
         if stats==1:
-            print('################################## equal_RC ##################################')
+            print('\n#### equal_RC ####')
             print(res.message)
             self.metrics(mu,Q,self.w)
         self.W.append(self.w)

@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-import portfolio_optimizer.port as prt
+import portfolio_optimizer.portfolio.port as prt
 import sys
 import argparse
 import numpy as np
@@ -44,7 +44,6 @@ if __name__=="__main__":
     '''remove .csv from file name and make sure columns are in the same order as share balance'''
     data.columns = [i[:-4] for i in data.columns]
 
-    data = data.drop(['BRDT3.SA'],axis=1)
     data.plot()
     data = data[args.stocks]
 
@@ -55,9 +54,9 @@ if __name__=="__main__":
 
     Q = np.array(prt.cov(returns))
 
-    print(Q)
-    print("mean",(returns.mean()+1)**252-1)
-    print("std",returns.std()*np.sqrt(252))
+    print("\n#### Return Summary ####")
+    print("\nmean:\n{}".format((returns.mean()+1)**252-1))
+    print("\nstd:\n{}".format(returns.std()*np.sqrt(252)))
 
     returns = returns + 1
     returns = returns.cumprod(axis=1)

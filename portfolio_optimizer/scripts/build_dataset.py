@@ -22,7 +22,7 @@ def build(args):
     #read csv files
     data = {}
     for stock in stocks_series:
-        data[stock]= pd.read_csv(os.path.join(args.stock_folder,stock),parse_dates=['Date'],index_col='Date')['Adj Close']
+        data[stock]= pd.read_csv(os.path.join(args.stock_folder,stock),parse_dates=['Date'],index_col='Date')['Close']
 
     #build dataframe
     stock_series = pd.DataFrame()

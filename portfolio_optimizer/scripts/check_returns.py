@@ -1,11 +1,12 @@
 import pandas as pd
 import os
-import portfolio_optimizer.port as prt
+import portfolio_optimizer.portfolio.port as prt
 import sys
 import argparse
 import numpy as np
 from pandas.tseries.offsets import *
 import matplotlib.pyplot as plt
+import matplotlib
 
 '''Description
 This script takes a positional argument to the path of a folder containing a csv file named
@@ -29,7 +30,6 @@ if __name__=="__main__":
 
     #returns = data.shift(1)/data-
 
-    data = data.drop(['BRDT3.SA.csv'],axis=1)
     data.plot()
 
     returns = data.pct_change()[data.shift(1).notnull()].dropna()
@@ -37,9 +37,9 @@ if __name__=="__main__":
 
     Q = np.array(prt.cov(returns))
 
-    print(Q)
-    print("mean",(returns.mean()+1)**252-1)
-    print("std",returns.std()*np.sqrt(252))
+    print("#### Summary ####")
+    print("\nmean:\n{}".format((returns.mean()+1)**252-1))
+    print("\nstd\n{}".format(returns.std()*np.sqrt(252)))
 
     returns = returns + 1
     returns = returns.cumprod(axis=1)
